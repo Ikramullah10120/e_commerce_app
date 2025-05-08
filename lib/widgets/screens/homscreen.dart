@@ -1,5 +1,8 @@
 import 'package:e_commerce_app/models/Productmodel.dart';
+import 'package:e_commerce_app/widgets/prductactionselection.dart';
+import 'package:e_commerce_app/widgets/screens/productdetailscreen.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class Homscreen extends StatefulWidget {
   const Homscreen({super.key});
@@ -60,7 +63,6 @@ class _HomscreenState extends State<Homscreen> {
                         setState(() {
                           selected = category;
                         });
-                        print("Tapped: $category");
                       },
                       child: Text(
                         category,
@@ -99,44 +101,43 @@ class _HomscreenState extends State<Homscreen> {
                 ),
                 itemBuilder: (context, index) {
                   final product = products[index];
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: product.color,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
+                  return GestureDetector(
+                    onTap: () {
+                      Get.to(() => Productdetailscreen(product: product));
+                    },
+
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        //Product Image
-                        Expanded(
+                        Container(
+                          height: 190,
+                          decoration: BoxDecoration(
+                            color: product.color,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+
                           child: Center(
                             child: Image.asset(
                               product.image,
                               fit: BoxFit.contain,
-                              height: 120,
+                              height: 140,
                             ),
                           ),
                         ),
+                        SizedBox(height: 8),
+
                         //Title
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: Text(
-                            product.title,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
+                        Text(
+                          product.title,
+                          style: TextStyle(fontSize: 16, color: Colors.grey),
                         ),
                         //price
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
-                          ),
-                          child: Text(
-                            "\$${product.price}",
-                            style: TextStyle(fontSize: 14, color: Colors.black),
+                        Text(
+                          "\$${product.price}",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                         SizedBox(height: 8),

@@ -1,3 +1,4 @@
+import 'package:e_commerce_app/controller/productcolourhelper.dart';
 import 'package:e_commerce_app/models/handbagmodel.dart';
 import 'package:e_commerce_app/screens/productdetailscreen.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,7 @@ class Homscreen extends StatefulWidget {
 }
 
 class _HomscreenState extends State<Homscreen> {
-  String selected = ""; // to track selected category (optional)
+  String selected = "";
 
   final List<String> categories = [
     "Handbag",
@@ -23,6 +24,7 @@ class _HomscreenState extends State<Homscreen> {
   @override
   Widget build(BuildContext context) {
     List<ProductModel> products = ProductModel.products;
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -41,7 +43,7 @@ class _HomscreenState extends State<Homscreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Women Heading
+          // Heading
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Text(
@@ -50,7 +52,7 @@ class _HomscreenState extends State<Homscreen> {
             ),
           ),
 
-          // 5 Text buttons in a row with spacing
+          // Category Row
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
@@ -77,7 +79,6 @@ class _HomscreenState extends State<Homscreen> {
             ),
           ),
 
-          // Optionally show which category is selected
           if (selected.isNotEmpty)
             Padding(
               padding: const EdgeInsets.all(16),
@@ -86,7 +87,8 @@ class _HomscreenState extends State<Homscreen> {
                 style: TextStyle(fontSize: 16),
               ),
             ),
-          // products grid
+
+          // Product Grid
           Expanded(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
@@ -101,46 +103,57 @@ class _HomscreenState extends State<Homscreen> {
                 itemBuilder: (context, index) {
                   final product = products[index];
                   final tag = 'product-${product.id}';
+
                   return GestureDetector(
-                    onTap: () {
+                    onTap: () async {
+                      Color dominantColor =
+                          await ColorGenerator.getDominantColor(product.image);
+
                       Get.to(
-                        () =>
-                            Productdetailscreen(product: product, heroTag: tag),
+                        () => Productdetailscreen(
+                          product: product,
+                          heroTag: tag,
+                          bgColor: dominantColor,
+                        ),
                       );
                     },
-
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          height: 190,
-                          decoration: BoxDecoration(
-                            color: product.color,
-                            borderRadius: BorderRadius.circular(16),
+                        FutureBuilder<Color>(
+                          future: ColorGenerator.getDominantColor(
+                            product.image,
                           ),
-
-                          child: Center(
-                            child: Hero(
-                              tag: tag,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: Image.asset(
-                                  product.image,
-                                  height: 140,
-                                  fit: BoxFit.contain,
+                          builder: (context, snapshot) {
+                            final bgColor =
+                                snapshot.data ?? Colors.grey.shade200;
+                            return Container(
+                              height: 190,
+                              decoration: BoxDecoration(
+                                color: bgColor,
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: Center(
+                                child: Hero(
+                                  tag: tag,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: Image.asset(
+                                      product.image,
+                                      height: 140,
+                                      fit: BoxFit.contain,
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
+                            );
+                          },
                         ),
                         SizedBox(height: 8),
-
-                        //Title
                         Text(
                           product.title,
                           style: TextStyle(fontSize: 16, color: Colors.grey),
                         ),
-                        //price
                         Text(
                           "\$${product.price}",
                           style: TextStyle(

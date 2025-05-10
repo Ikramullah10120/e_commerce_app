@@ -1,3 +1,4 @@
+import 'package:e_commerce_app/controller/productcolourhelper.dart';
 import 'package:e_commerce_app/models/handbagmodel.dart';
 import 'package:e_commerce_app/widgets/prductactionselection.dart';
 import 'package:flutter/material.dart';
@@ -6,17 +7,21 @@ import 'package:get/get.dart';
 class Productdetailscreen extends StatelessWidget {
   final ProductModel product;
   final String heroTag;
-
-  Productdetailscreen({Key? key, required this.product, required this.heroTag})
-    : super(key: key);
+  final Color bgColor;
+  Productdetailscreen({
+    Key? key,
+    required this.product,
+    required this.heroTag,
+    required this.bgColor,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: product.color,
+      backgroundColor: bgColor,
       appBar: AppBar(
-        backgroundColor: product.color,
         elevation: 0,
+        backgroundColor: bgColor,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_sharp, color: Colors.white),
           onPressed: () => Get.back(),
@@ -139,7 +144,7 @@ class Productdetailscreen extends StatelessWidget {
                           ),
                         ),
                         SizedBox(height: 20),
-                        Productactionsection(color: product.color),
+                        Productactionsection(color: bgColor),
                       ],
                     ),
                   ),

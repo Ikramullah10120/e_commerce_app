@@ -1,9 +1,14 @@
 import 'dart:ui';
 
 class ProductModel {
-  final String image, title, description;
-  final double price, size, id;
-  final String category;
+  final int id;
+  final String title;
+  final double price;
+  final String image;
+  final String maincategory; // 👈 this MUST be here
+  final String description;
+  Color? dominantColor;
+  final int size;
   // final Color color;
   ProductModel({
     required this.id,
@@ -13,7 +18,8 @@ class ProductModel {
     required this.image,
     // required this.color,
     required this.size,
-    required this.category,
+    required this.maincategory,
+    this.dominantColor,
   });
 
   static List<ProductModel> products = [
@@ -24,7 +30,8 @@ class ProductModel {
       size: 12,
       description: dummyText,
       image: "assets/images/bag1.jpg",
-      category: "Office Code",
+      maincategory: "Handbag",
+      dominantColor: products[0].dominantColor,
       // color: const Color.fromARGB(255, 33, 81, 116),
     ),
     ProductModel(
@@ -34,7 +41,9 @@ class ProductModel {
       size: 8,
       description: dummyText,
       image: "assets/images/bag2.jpg",
-      category: "Belt Bag",
+      maincategory: "Handbag",
+      dominantColor: products[0].dominantColor,
+
       // color: const Color(0xFFD3A984),
     ),
     ProductModel(
@@ -44,7 +53,9 @@ class ProductModel {
       size: 10,
       description: dummyText,
       image: "assets/images/bag3.jpg",
-      category: "Hang Top",
+      dominantColor: products[0].dominantColor,
+
+      maincategory: "Handbag",
       // color: const Color(0xFF989493),
     ),
     ProductModel(
@@ -53,18 +64,22 @@ class ProductModel {
       price: 500,
       size: 11,
       description: dummyText,
+      dominantColor: products[0].dominantColor,
+
       image: "assets/images/bag4.jpg",
-      category: "Old Fashion",
+      maincategory: "Handbag",
       // color: const Color(0xFFE6B398),
     ),
     ProductModel(
       id: 5,
       title: "Office Code",
       price: 235,
+
+      dominantColor: products[0].dominantColor,
       size: 12,
       description: dummyText,
       image: "assets/images/bag5.jpg",
-      category: "Office Code",
+      maincategory: "Handbag",
       // color: const Color(0xFFFB7883),
     ),
     ProductModel(
@@ -72,10 +87,35 @@ class ProductModel {
       title: "Office Code",
       price: 450,
       size: 12,
+
+      dominantColor: products[0].dominantColor,
       description: dummyText,
       image: "assets/images/bag6.jpg",
-      category: "Office Code",
+      maincategory: "Handbag",
       // color: const Color(0xFFAEAEAE),
+    ),
+    //Jewerllery
+    ProductModel(
+      id: 7,
+      title: 'Gold Necklace',
+      size: 21,
+
+      dominantColor: products[0].dominantColor,
+      description: dummyText,
+      image: 'assets/images/j.set1.jpg',
+      price: 129.99,
+      maincategory: 'Jewellery',
+    ),
+    ProductModel(
+      id: 8,
+      title: 'Gold Necklace',
+      image: 'assets/images/j.set2.jpg',
+      description: dummyText,
+      size: 21,
+      dominantColor: products[0].dominantColor,
+
+      price: 129.99,
+      maincategory: 'Jewellery',
     ),
   ];
 

@@ -1,4 +1,5 @@
 import 'package:e_commerce_app/screens/homscreen.dart';
+import 'package:e_commerce_app/screens/splashscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: Homscreen(),
+      home: Splashscreen(),
       debugShowCheckedModeBanner: false,
     );
   }

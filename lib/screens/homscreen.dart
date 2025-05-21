@@ -3,6 +3,7 @@ import 'package:e_commerce_app/models/handbagmodel.dart';
 import 'package:e_commerce_app/screens/productitem.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 
 class Homscreen extends StatefulWidget {
   const Homscreen({super.key});
@@ -13,6 +14,7 @@ class Homscreen extends StatefulWidget {
 
 class _HomscreenState extends State<Homscreen> {
   String selected = "Handbag";
+  bool isLoading = true;
   final List<String> categories = [
     "Handbag",
     "Jewellery",
@@ -23,18 +25,20 @@ class _HomscreenState extends State<Homscreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _generateDominantColorsInBackground(); // ✅ Background me color generation
+
+    _startColorGeneration(); // ✅ Call optimized generator
   }
 
-  void _generateDominantColorsInBackground() async {
-    for (var product in ProductModel.products) {
-      if (product.dominantColor == null) {
-        final color = await ColorGenerator.getDominantColor(product.image);
-        product.dominantColor = color;
-        if (mounted) {
-          setState(() {}); // ✅ Update only this item
-        }
-      }
+  void _startColorGeneration() async {
+    await ColorGenerator.generateColorAndNotify(() {
+      if (mounted) setState(() {});
+    });
+    await Future.delayed(Duration(seconds: 5));
+
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -117,27 +121,58 @@ class _HomscreenState extends State<Homscreen> {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: GridView.builder(
-                itemCount: products.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 20,
-                  crossAxisSpacing: 20,
-                  childAspectRatio: 0.7,
-                ),
-                itemBuilder: (context, index) {
-                  final product = products[index];
-                  final tag = 'product-${product.id}';
-                  return RepaintBoundary(
-                    child: Productitem(product: product, tag: tag),
-                  );
-                  // return Productitem(product: product, tag: tag);
-                },
-              ),
+              child:
+                  isLoading
+                      ? _buildShimmerGrid()
+                      : GridView.builder(
+                        itemCount: products.length,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              mainAxisSpacing: 20,
+                              crossAxisSpacing: 20,
+                              childAspectRatio: 0.7,
+                            ),
+                        itemBuilder: (context, index) {
+                          final product = products[index];
+                          final tag = 'product-${product.id}';
+                          return RepaintBoundary(
+                            child: Productitem(product: product, tag: tag),
+                          );
+                          // return Productitem(product: product, tag: tag);
+                        },
+                      ),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  // Add a shimmer grid placeholder while loading
+  Widget _buildShimmerGrid() {
+    return GridView.builder(
+      itemCount: 6,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        mainAxisSpacing: 20,
+        crossAxisSpacing: 20,
+        childAspectRatio: 0.7,
+      ),
+      itemBuilder: (context, index) {
+        return Shimmer.fromColors(
+          baseColor: Colors.grey.shade300,
+          highlightColor: Colors.grey.shade100,
+
+          child: Container(
+            margin: const EdgeInsets.symmetric(vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade300,
+              borderRadius: BorderRadius.circular(16),
+            ),
+          ),
+        );
+      },
     );
   }
 }
